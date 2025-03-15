@@ -5,11 +5,11 @@ source .env.volume
 #3 remove network
 source .env.network
 
-if [ "$(docker ps -aq -f name=$CONTAINER_NAME)" ]; then
-    echo "removing container $CONTAINER_NAME"
-    docker kill $CONTAINER_NAME
+if [ "$(docker ps -aq -f name=$DB_CONTAINER_NAME)" ]; then
+    echo "removing container $DB_CONTAINER_NAME"
+    docker kill $DB_CONTAINER_NAME
 else
-    echo "the container with the name $CONTAINER_NAME does not exist, skipping this step."
+    echo "the container with the name $DB_CONTAINER_NAME does not exist, skipping this step."
 fi
 
 if [ "$(docker volume ls -f name=$VOLUME_NAME)" ]; then

@@ -1,0 +1,7 @@
+services:
+  notebooks:
+    networks:
+      - notes-rest-app-net
+  notes:
+    networks:
+      - notes-rest-app-net

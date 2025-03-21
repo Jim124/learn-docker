@@ -1,0 +1,44 @@
+name: key-value-app
+services:
+  backend:
+    build:
+      context: backend
+      dockerfile: Dockerfile.dev
+    env_file:
+      - .env.db-key-value
+    environment:
+      - PORT=3000
+      - MONGODB_HOST=db
+    depends_on:
+      - db
+    networks:
+      - key-value-net
+    ports:
+      - 3000:3000
+    # hot reloading
+    develop:
+      watch:
+        - path: ./backend/src
+          action: sync
+          target: /app/src
+  db:
+    image: mongodb/mongodb-community-server:7.0.11-ubuntu2204
+    ports:
+      - 27017:27017
+    env_file:
+      - .env.db-root-creds
+      - .env.db-key-value
+    volumes:
+      - type: bind
+        source: ./db-config/mongo-init.js
+        target: /docker-entrypoint-initdb.d/mongo-init.js
+        read_only: true
+      - type: volume
+        source: key-value-volume
+        target: /data/db
+    networks:
+      - key-value-net
+volumes:
+  key-value-volume:
+networks:
+  key-value-net:

@@ -21,7 +21,7 @@ source setup.sh
 
 if [ "$(docker ps -aq -f name=$DB_CONTAINER_NAME)" ]; then
     echo "A container with the name $DB_CONTAINER_NAME already exists."
-    echo "Thee container will be removed when stopped."
+    echo "The container will be removed when stopped."
     echo "To stop the container, run docker kill mongodb"
     exit 1
 fi

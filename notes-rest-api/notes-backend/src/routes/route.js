@@ -1,7 +1,8 @@
 import express from 'express';
 import Note from '../models/note.js';
 import { isValid } from '../middleware/valid.js';
-
+import axios from 'axios';
+const notebooksApiUrl = process.env.NOTEBOOKS_API_URL;
 const noteRouter = express.Router();
 noteRouter.get('/', async (req, res) => {
   const notes = await Note.find();
@@ -9,7 +10,15 @@ noteRouter.get('/', async (req, res) => {
 });
 
 noteRouter.post('/', async (req, res) => {
-  const { title, content } = req.body;
+  const { title, content, notebooksId } = req.body;
+  if (notebooksId) {
+    try {
+      await axios.get(`${notebooksApiUrl}/${notebooksId}`);
+    } catch (error) {
+      console.error(error);
+      console.error(error.message);
+    }
+  }
   if (!title || !content) {
     return res.status(400).json({ error: `'name' or 'content ' are required` });
   }

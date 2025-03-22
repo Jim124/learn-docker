@@ -1,6 +1,6 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import Notebook from '../models/notebook.js';
+import { isValid } from '../middleware/valid.js';
 const notebookRouter = express.Router();
 
 notebookRouter.get('/', async (req, res) => {
@@ -22,14 +22,9 @@ notebookRouter.post('/', async (req, res) => {
   }
 });
 
-notebookRouter.get('/:id', async (req, res) => {
+notebookRouter.get('/:id', isValid, async (req, res) => {
   const { id } = req.params;
-  if (!id) {
-    return res.status(400).json({ error: `id is required` });
-  }
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: 'notebook not found ' });
-  }
+
   try {
     const notebook = await Notebook.findById(id);
     if (!notebook) {
@@ -41,12 +36,9 @@ notebookRouter.get('/:id', async (req, res) => {
   }
 });
 
-notebookRouter.put('/:id', async (req, res) => {
+notebookRouter.put('/:id', isValid, async (req, res) => {
   const { id } = req.params;
 
-  if (!id) {
-    return res.status(400).json({ error: `id is required` });
-  }
   const { name, description } = req.body;
   if (!name) {
     return res.status(400).json({ error: `'name' is required` });
@@ -59,11 +51,9 @@ notebookRouter.put('/:id', async (req, res) => {
   }
 });
 
-notebookRouter.delete('/:id', async (req, res) => {
+notebookRouter.delete('/:id', isValid, async (req, res) => {
   const { id } = req.params;
-  if (!id) {
-    return res.status(400).json({ error: `id is required` });
-  }
+
   try {
     await Notebook.findByIdAndDelete(id);
     res.sendStatus(204);
